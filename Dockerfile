@@ -1,5 +1,4 @@
-# --- Etapa de construcción ---
-FROM openjdk:17-jdk-slim AS build
+FROM eclipse-temurin:17-jdk-alpine AS build
 WORKDIR /app
 
 COPY gradlew .
@@ -8,14 +7,15 @@ COPY build.gradle .
 COPY settings.gradle .
 
 COPY src src
-RUN chmod +x ./gradlew
 
+RUN chmod +x ./gradlew
 RUN ./gradlew build -x test
 
 
-FROM openjdk:17-jdk-slim
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
+# Copiamos el .jar
 COPY --from=build /app/build/libs/*-SNAPSHOT.jar app.jar
 
 EXPOSE 8080
